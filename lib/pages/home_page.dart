@@ -1,22 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_supabase/pages/create_page.dart';
+import 'package:flutter_supabase/pages/edit_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   final SupabaseClient supabase = Supabase.instance.client;
 
+  Future<List> readData() async {
+    final result = await supabase
+        .from('todos')
+        .select()
+        .eq('user_id', supabase.auth.currentUser!.id)
+        .order('id', ascending: false);
+    return result;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("supabase flutter"),
         actions: [
-          IconButton(onPressed: () async {
-            await supabase.auth.signOut();
-          }, icon: const Icon(Icons.logout))
+          IconButton(
+              onPressed: () async {
+                await supabase.auth.signOut();
+              },
+              icon: const Icon(Icons.logout))
         ],
       ),
-      body: const Center(
-        child: Text("Home Page"),
+      body: FutureBuilder(
+          future: readData(),
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasError) {
+              return Center(
+                child: Text(snapshot.error.toString()),
+              );
+            }
+            if (snapshot.hasData) {
+              if (snapshot.data.length == 0) {
+                return const Center(
+                  child: Text("No data available"),
+                );
+              }
+              return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, int index) {
+                  var data = snapshot.data[index];
+                  return ListTile(
+                    title: Text(data['title']),
+                    trailing: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    EditPage(data['title'], data['id'])));
+                      },
+                      icon: const Icon(
+                        Icons.edit,
+                        color: Colors.red,
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CreatePage()));
+        },
       ),
     );
   }
