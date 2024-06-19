@@ -3,9 +3,26 @@ import 'package:flutter_supabase/pages/create_page.dart';
 import 'package:flutter_supabase/pages/edit_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final SupabaseClient supabase = Supabase.instance.client;
+  late Stream<List<Map<String, dynamic>>> _readStream;
+
+  @override
+  void initState() {
+    _readStream = supabase
+        .from('todos')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', supabase.auth.currentUser!.id)
+        .order('id', ascending: false);
+    super.initState();
+  }
 
   Future<List> readData() async {
     final result = await supabase
@@ -29,8 +46,8 @@ class HomePage extends StatelessWidget {
               icon: const Icon(Icons.logout))
         ],
       ),
-      body: FutureBuilder(
-          future: readData(),
+      body: StreamBuilder(
+          stream: _readStream,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.hasError) {
               return Center(

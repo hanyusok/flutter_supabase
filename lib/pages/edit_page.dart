@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:supabase_flutter/supabase_flutter.dart";
 
 class EditPage extends StatefulWidget {
   final String editData;
@@ -12,6 +13,55 @@ class EditPage extends StatefulWidget {
 class _EditPageState extends State<EditPage> {
   bool isLoading = false;
   TextEditingController titleController = TextEditingController();
+  SupabaseClient supabase = Supabase.instance.client;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    supabase.dispose();
+    super.dispose();
+  }
+
+  Future<void> updateData() async {
+    if (titleController.text != '') {
+      setState(() {
+        isLoading = true;
+      });
+
+      try {
+        await supabase.from('todos').update(
+            {'title': titleController.text}).match({'id': widget.editId});
+        Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
+        Navigator.pop(context);
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Something went wrong!!")));
+      }
+    }
+  }
+
+  Future<void> deleteData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await supabase.from('todos').delete().match({'id': widget.editId});
+      Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
+      Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Something went wrong!!")));
+    }
+  }
 
   @override
   void initState() {
@@ -45,7 +95,7 @@ class _EditPageState extends State<EditPage> {
                         width: double.infinity,
                         height: 40,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: updateData,
                           child: const Text("Update"),
                         ),
                       ),
@@ -54,7 +104,7 @@ class _EditPageState extends State<EditPage> {
                       ),
                       const Divider(),
                       ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: deleteData,
                         icon: const Icon(Icons.delete),
                         label: const Text("Delete"),
                         style: ButtonStyle(
