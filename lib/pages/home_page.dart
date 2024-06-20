@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_supabase/pages/create_page.dart';
 import 'package:flutter_supabase/pages/edit_page.dart';
+import 'package:flutter_supabase/pages/upload_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,6 +40,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("supabase flutter"),
         actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const UploadPage()));
+              },
+              icon: const Icon(Icons.upload_file)),
           IconButton(
               onPressed: () async {
                 await supabase.auth.signOut();
