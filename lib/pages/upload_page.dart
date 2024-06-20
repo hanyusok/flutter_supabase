@@ -34,7 +34,7 @@ class _UploadPageState extends State<UploadPage> {
     try {
       await supabase.storage
           .from('user-images')
-          .remove(["supabase.auth.currentUser!.id/imageName"]);
+          .remove(["${supabase.auth.currentUser!.id}/$imageName"]);
       setState(() {});
     } catch (e) {
       if (!mounted) return;
@@ -118,8 +118,8 @@ class _UploadPageState extends State<UploadPage> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
-                          deleteImage(imageData['name']);
+                        onPressed: () async {
+                          await deleteImage(imageData['name']);
                         },
                         icon: const Icon(Icons.delete, color: Colors.red),
                       )
