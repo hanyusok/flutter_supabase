@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_supabase/pages/create_page.dart';
-// import 'package:flutter_supabase/pages/edit_page.dart';
 import 'package:flutter_supabase/pages/home_page.dart';
 import 'package:flutter_supabase/pages/start_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -12,7 +10,6 @@ void main() async {
   String supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
   String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-
   runApp(const MyApp());
 }
 
@@ -42,7 +39,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final SupabaseClient supabase = Supabase.instance.client;
-  User? _user;
+  late User? _user;
 
   @override
   void initState() {

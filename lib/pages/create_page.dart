@@ -13,6 +13,7 @@ class CreatePage extends StatefulWidget {
 class _CreatePageState extends State<CreatePage> {
   bool isLoading = false;
   TextEditingController titleController = TextEditingController();
+  TextEditingController memoController = TextEditingController();
   final SupabaseClient supabase = Supabase.instance.client;
 
   @override
@@ -28,9 +29,11 @@ class _CreatePageState extends State<CreatePage> {
     });
     try {
       String userId = supabase.auth.currentUser!.id;
-      await supabase
-          .from('todos')
-          .insert({'title': titleController.text, 'user_id': userId});
+      await supabase.from('todos').insert({
+        'title': titleController.text,
+        'memo': memoController.text,
+        'user_id': userId
+      });
       if (!context.mounted) return;
       Navigator.of(context).pop();
     } catch (e) {
@@ -58,6 +61,11 @@ class _CreatePageState extends State<CreatePage> {
             ),
             const SizedBox(
               height: 10,
+            ),
+            TextField(
+              controller: memoController,
+              decoration: const InputDecoration(
+                  hintText: "enter memo", border: OutlineInputBorder()),
             ),
             isLoading
                 ? const Center(

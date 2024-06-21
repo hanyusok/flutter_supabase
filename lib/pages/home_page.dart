@@ -74,14 +74,16 @@ class _HomePageState extends State<HomePage> {
                 itemBuilder: (context, int index) {
                   var data = snapshot.data[index];
                   return ListTile(
+                    leading: const Icon(Icons.task_alt),
                     title: Text(data['title']),
+                    subtitle: Text(data['memo']),
                     trailing: IconButton(
                       onPressed: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    EditPage(data['title'], data['id'])));
+                                builder: (context) => EditPage(
+                                    data['title'], data['memo'], data['id'])));
                       },
                       icon: const Icon(
                         Icons.edit,

@@ -2,9 +2,10 @@ import "package:flutter/material.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
 
 class EditPage extends StatefulWidget {
-  final String editData;
+  final String editTitle;
+  final String editMemo;
   final int editId;
-  const EditPage(this.editData, this.editId, {super.key});
+  const EditPage(this.editTitle, this.editMemo, this.editId, {super.key});
 
   @override
   State<EditPage> createState() => _EditPageState();
@@ -13,11 +14,13 @@ class EditPage extends StatefulWidget {
 class _EditPageState extends State<EditPage> {
   bool isLoading = false;
   TextEditingController titleController = TextEditingController();
+  TextEditingController memoController = TextEditingController();
   SupabaseClient supabase = Supabase.instance.client;
 
   @override
   void dispose() {
     titleController.dispose();
+    memoController.dispose();
     supabase.dispose();
     super.dispose();
   }
@@ -29,9 +32,11 @@ class _EditPageState extends State<EditPage> {
       });
 
       try {
-        await supabase.from('todos').update(
-            {'title': titleController.text}).match({'id': widget.editId});
-        Future.delayed(const Duration(seconds: 1));
+        await supabase.from('todos').update({
+          'title': titleController.text,
+          'memo': memoController.text
+        }).match({'id': widget.editId});
+        // Future.delayed(const Duration(seconds: 1));
         if (!mounted) return;
         Navigator.pop(context);
       } catch (e) {
@@ -51,7 +56,7 @@ class _EditPageState extends State<EditPage> {
 
     try {
       await supabase.from('todos').delete().match({'id': widget.editId});
-      Future.delayed(const Duration(seconds: 1));
+      // Future.delayed(const Duration(seconds: 1));
       if (!mounted) return;
       Navigator.pop(context);
     } catch (e) {
@@ -65,7 +70,8 @@ class _EditPageState extends State<EditPage> {
 
   @override
   void initState() {
-    titleController.text = widget.editData;
+    titleController.text = widget.editTitle;
+    memoController.text = widget.editMemo;
     super.initState();
   }
 
@@ -84,6 +90,11 @@ class _EditPageState extends State<EditPage> {
             ),
             const SizedBox(
               height: 10,
+            ),
+            TextField(
+              controller: memoController,
+              decoration: const InputDecoration(
+                  hintText: "enter memo", border: OutlineInputBorder()),
             ),
             isLoading
                 ? const Center(
