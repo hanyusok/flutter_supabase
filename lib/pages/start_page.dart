@@ -13,8 +13,9 @@ class _StartPageState extends State<StartPage> {
   final SupabaseClient supabase = Supabase.instance.client;
   bool _signInLoading = false;
   bool _signUpLoading = false;
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  late final TextEditingController _emailController = TextEditingController();
+  late final TextEditingController _passwordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _googleSignInLoading = false;
 

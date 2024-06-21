@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_supabase/pages/home_page.dart';
 import 'package:flutter_supabase/pages/start_page.dart';
@@ -12,6 +14,8 @@ void main() async {
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   runApp(const MyApp());
 }
+
+final supabase = Supabase.instance.client;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -38,8 +42,8 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  final SupabaseClient supabase = Supabase.instance.client;
   late User? _user;
+  late final StreamSubscription<AuthState> _authStateSubscription;
 
   @override
   void initState() {
