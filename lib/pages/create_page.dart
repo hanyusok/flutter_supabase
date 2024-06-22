@@ -12,13 +12,14 @@ class CreatePage extends StatefulWidget {
 
 class _CreatePageState extends State<CreatePage> {
   bool isLoading = false;
-  TextEditingController titleController = TextEditingController();
-  TextEditingController memoController = TextEditingController();
+  late final titleController = TextEditingController();
+  late final memoController = TextEditingController();
   final SupabaseClient supabase = Supabase.instance.client;
 
   @override
   void dispose() {
     titleController.dispose();
+    memoController.dispose();
     supabase.dispose();
     super.dispose();
   }

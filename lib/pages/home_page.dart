@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// import 'package:flutter_supabase/main.dart';
 import 'package:flutter_supabase/pages/create_page.dart';
 import 'package:flutter_supabase/pages/edit_page.dart';
 import 'package:flutter_supabase/pages/upload_page.dart';
@@ -12,7 +13,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final SupabaseClient supabase = Supabase.instance.client;
+  late final SupabaseClient supabase = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> _readStream;
 
   @override

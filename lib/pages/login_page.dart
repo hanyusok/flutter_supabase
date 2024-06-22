@@ -2,28 +2,32 @@ import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:supabase_flutter/supabase_flutter.dart";
 
-class StartPage extends StatefulWidget {
-  const StartPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<StartPage> createState() => _StartPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _StartPageState extends State<StartPage> {
-  final SupabaseClient supabase = Supabase.instance.client;
+class _LoginPageState extends State<LoginPage> {
   bool _signInLoading = false;
   bool _signUpLoading = false;
-  late final TextEditingController _emailController = TextEditingController();
-  late final TextEditingController _passwordController =
-      TextEditingController();
-  final _formKey = GlobalKey<FormState>();
   bool _googleSignInLoading = false;
+  final supabase = Supabase.instance.client;
+  late final _emailController = TextEditingController();
+  late final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
-    supabase.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    supabase.dispose();
     super.dispose();
   }
 
@@ -41,7 +45,7 @@ class _StartPageState extends State<StartPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Image.network(
-                      "https://seeklogo.com/images/S/supabase-logo-DCC676FFE2-seeklogo.com.png",
+                      "https://img.freepik.com/vecteurs-premium/icone-medecin-avatar-blanc_136162-58.jpg",
                       height: 150,
                     ),
                     const SizedBox(
@@ -55,7 +59,10 @@ class _StartPageState extends State<StartPage> {
                         return null;
                       },
                       controller: _emailController,
-                      decoration: const InputDecoration(label: Text("Email")),
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.email),
+                          hintText: "please enter email",
+                          labelText: "Email"),
                       keyboardType: TextInputType.emailAddress,
                     ),
                     TextFormField(
@@ -66,8 +73,10 @@ class _StartPageState extends State<StartPage> {
                         return null;
                       },
                       controller: _passwordController,
-                      decoration:
-                          const InputDecoration(label: Text("Password")),
+                      decoration: const InputDecoration(
+                          icon: Icon(Icons.password),
+                          hintText: "please enter password",
+                          labelText: "Password"),
                       obscureText: true,
                     ),
                     const SizedBox(
