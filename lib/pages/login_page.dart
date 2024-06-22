@@ -17,17 +17,19 @@ class _LoginPageState extends State<LoginPage> {
   late final _emailController = TextEditingController();
   late final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  // late FocusNode myFocusNode;
 
   @override
   void initState() {
     super.initState();
+    // myFocusNode = FocusNode();
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    supabase.dispose();
+    // _emailController.dispose();
+    // _passwordController.dispose();
+    // myFocusNode.dispose();
     super.dispose();
   }
 
@@ -58,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                         }
                         return null;
                       },
+                      // focusNode: myFocusNode,
                       controller: _emailController,
                       decoration: const InputDecoration(
                           icon: Icon(Icons.email),
@@ -73,6 +76,7 @@ class _LoginPageState extends State<LoginPage> {
                         return null;
                       },
                       controller: _passwordController,
+                      // focusNode: myFocusNode,
                       decoration: const InputDecoration(
                           icon: Icon(Icons.password),
                           hintText: "please enter password",

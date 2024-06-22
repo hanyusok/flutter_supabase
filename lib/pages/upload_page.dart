@@ -16,6 +16,16 @@ class _UploadPageState extends State<UploadPage> {
   bool isUploading = false;
   final SupabaseClient supabase = Supabase.instance.client;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Future getMyFiles() async {
     final List<FileObject> result = await supabase.storage
         .from('user-images')
