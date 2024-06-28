@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter_supabase/main.dart';
 import 'package:flutter_supabase/pages/create_page.dart';
 import 'package:flutter_supabase/pages/edit_page.dart';
 import 'package:flutter_supabase/pages/upload_page.dart';
@@ -15,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late final SupabaseClient supabase = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> _readStream;
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -35,11 +35,18 @@ class _HomePageState extends State<HomePage> {
     return result;
   }
 
+/* bottom Navigation settting*/
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("supabase flutter"),
+        title: const Text("todo 리스트"),
         actions: [
           IconButton(
               onPressed: () {
@@ -105,6 +112,25 @@ class _HomePageState extends State<HomePage> {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const CreatePage()));
         },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.business),
+            label: 'Business',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.school),
+            label: 'School',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.amber[800],
+        onTap: _onItemTapped,
       ),
     );
   }
