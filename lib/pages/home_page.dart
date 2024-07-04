@@ -35,8 +35,8 @@ class _HomePageState extends State<HomePage> {
     return result;
   }
 
-/* bottom Navigation settting*/
-  void _onItemTapped(int index) {
+  /* bottom Navigation settting*/
+  void onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -44,6 +44,63 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget strList = StreamBuilder(
+        stream: _readStream,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: Text(snapshot.error.toString()),
+            );
+          }
+          if (snapshot.hasData) {
+            if (snapshot.data.length == 0) {
+              return const Center(
+                child: Text("No data available"),
+              );
+            }
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, int index) {
+                final data = snapshot.data[index];
+                return ListTile(
+                  leading: const Icon(Icons.task_alt),
+                  title: Text(data['title']),
+                  subtitle: Text(data['memo']),
+                  trailing: IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => EditPage(
+                                  data['title'], data['memo'], data['id'])));
+                    },
+                    icon: const Icon(
+                      Icons.edit,
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              },
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        });
+
+    Widget secondPage = const Center(
+      child: Text('두번째 페이지'),
+    );
+    Widget thirdPage = const Center(
+      child: Text('세번째 페이지'),
+    );
+
+    final List<Map<String, dynamic>> screen = [
+      {'screen': strList},
+      {'screen': secondPage},
+      {'screen': thirdPage}
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("todo 리스트"),
@@ -63,49 +120,7 @@ class _HomePageState extends State<HomePage> {
               icon: const Icon(Icons.logout))
         ],
       ),
-      body: StreamBuilder(
-          stream: _readStream,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.hasError) {
-              return Center(
-                child: Text(snapshot.error.toString()),
-              );
-            }
-            if (snapshot.hasData) {
-              if (snapshot.data.length == 0) {
-                return const Center(
-                  child: Text("No data available"),
-                );
-              }
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, int index) {
-                  var data = snapshot.data[index];
-                  return ListTile(
-                    leading: const Icon(Icons.task_alt),
-                    title: Text(data['title']),
-                    subtitle: Text(data['memo']),
-                    trailing: IconButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditPage(
-                                    data['title'], data['memo'], data['id'])));
-                      },
-                      icon: const Icon(
-                        Icons.edit,
-                        color: Colors.red,
-                      ),
-                    ),
-                  );
-                },
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
+      body: screen[_selectedIndex]['screen'],
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
@@ -130,7 +145,7 @@ class _HomePageState extends State<HomePage> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
+        onTap: onItemTapped,
       ),
     );
   }
